@@ -548,23 +548,23 @@ EOF
 (for f in $coresrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $toolssrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSTOOLS)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSTOOLS) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $testcryptosrc $testspeedsrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $testx509src ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV)\n\t$(CC) $(CFLAGS) $(INCFLAGS) -DSRCDIRNAME=".." $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) -DSRCDIRNAME=".." $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done) >> Rules.mk
