@@ -47,9 +47,11 @@ fi
 # Exit on first error.
 set -e
 
+# Settings source file; also used as guard for object directory creation.
+settingssrc="src/settings.c"
+
 # Source files. Please keep in alphabetical order.
 coresrc=" \
-	src/settings.c \
 	src/aead/ccm.c \
 	src/aead/eax.c \
 	src/aead/gcm.c \
@@ -450,7 +452,8 @@ cat > Rules.mk <<EOF
 # Automatically generated rules. Use 'mkrules.sh' to modify/regenerate.
 EOF
 
-(printf "\nOBJ ="
+(printf "\nOBJSETTINGS = \$(OBJDIR)\$Psettings\$O\n"
+printf "\nOBJ = \$(OBJSETTINGS)"
 for f in $coresrc ; do
 	printf ' \\\n $(OBJDIR)$P%s' "$(basename "$f" .c)\$O"
 done
@@ -523,13 +526,14 @@ clean:
 	-\$(RM) \$(OBJDIR)\$P*\$O
 	-\$(RM) \$(BEARSSLLIB) \$(BEARSSLDLL) \$(BRSSL) \$(TESTCRYPTO) \$(TESTSPEED) \$(TESTX509)
 
-\$(OBJDIR):
+\$(OBJSETTINGS): src\$Psettings.c \$(HEADERSPRIV)
 	-\$(MKDIR) \$(OBJDIR)
+	\$(CC) \$(CFLAGS) \$(INCFLAGS) \$(CCOUT)\$(OBJDIR)\$Psettings\$O src\$Psettings.c
 
-\$(BEARSSLLIB): \$(OBJDIR) \$(OBJ)
+\$(BEARSSLLIB): \$(OBJ)
 	\$(AR) \$(ARFLAGS) \$(AROUT)\$(BEARSSLLIB) \$(OBJ)
 
-\$(BEARSSLDLL): \$(OBJDIR) \$(OBJ)
+\$(BEARSSLDLL): \$(OBJ)
 	\$(LDDLL) \$(LDDLLFLAGS) \$(LDDLLOUT)\$(BEARSSLDLL) \$(OBJ)
 
 \$(BRSSL): \$(BEARSSLLIB) \$(OBJBRSSL)
@@ -548,23 +552,23 @@ EOF
 (for f in $coresrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJSETTINGS)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $toolssrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSTOOLS) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSTOOLS) $(OBJSETTINGS)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $testcryptosrc $testspeedsrc ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJSETTINGS)\n\t$(CC) $(CFLAGS) $(INCFLAGS) $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done
 
 for f in $testx509src ; do
 	b="$(basename "$f" .c)\$O"
 	g="$(escsep "$f")"
-	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJDIR)\n\t$(CC) $(CFLAGS) $(INCFLAGS) -DSRCDIRNAME=".." $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
+	printf '\n$(OBJDIR)$P%s: %s $(HEADERSPRIV) $(OBJSETTINGS)\n\t$(CC) $(CFLAGS) $(INCFLAGS) -DSRCDIRNAME=".." $(CCOUT)$(OBJDIR)$P%s %s\n' "$b" "$g" "$b" "$g"
 done) >> Rules.mk
