@@ -461,7 +461,7 @@
  * optimised code is used, to perform direct memory access when the
  * underlying architecture supports it, both for endianness and
  * alignment. This, however, may trigger strict aliasing issues; the
- * code below uses unions to perform (supposedly) safe type punning.
+ * code below uses memcpy to perform (supposedly) safe type punning.
  * Since the C aliasing rules are relatively complex and were amended,
  * or at least re-explained with different phrasing, in all successive
  * versions of the C standard, it is always a bit risky to bet that any
@@ -469,26 +469,11 @@
  * "right".
  */
 
-typedef union {
-	uint16_t u;
-	unsigned char b[sizeof(uint16_t)];
-} br_union_u16;
-
-typedef union {
-	uint32_t u;
-	unsigned char b[sizeof(uint32_t)];
-} br_union_u32;
-
-typedef union {
-	uint64_t u;
-	unsigned char b[sizeof(uint64_t)];
-} br_union_u64;
-
 static inline void
 br_enc16le(void *dst, unsigned x)
 {
 #if BR_LE_UNALIGNED
-	((br_union_u16 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -502,7 +487,7 @@ static inline void
 br_enc16be(void *dst, unsigned x)
 {
 #if BR_BE_UNALIGNED
-	((br_union_u16 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -516,7 +501,9 @@ static inline unsigned
 br_dec16le(const void *src)
 {
 #if BR_LE_UNALIGNED
-	return ((const br_union_u16 *)src)->u;
+	unsigned x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
@@ -529,7 +516,9 @@ static inline unsigned
 br_dec16be(const void *src)
 {
 #if BR_BE_UNALIGNED
-	return ((const br_union_u16 *)src)->u;
+	unsigned x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
@@ -542,7 +531,7 @@ static inline void
 br_enc32le(void *dst, uint32_t x)
 {
 #if BR_LE_UNALIGNED
-	((br_union_u32 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -558,7 +547,7 @@ static inline void
 br_enc32be(void *dst, uint32_t x)
 {
 #if BR_BE_UNALIGNED
-	((br_union_u32 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -574,7 +563,9 @@ static inline uint32_t
 br_dec32le(const void *src)
 {
 #if BR_LE_UNALIGNED
-	return ((const br_union_u32 *)src)->u;
+	uint32_t x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
@@ -590,7 +581,9 @@ static inline uint32_t
 br_dec32be(const void *src)
 {
 #if BR_BE_UNALIGNED
-	return ((const br_union_u32 *)src)->u;
+	uint32_t x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
@@ -606,7 +599,7 @@ static inline void
 br_enc64le(void *dst, uint64_t x)
 {
 #if BR_LE_UNALIGNED
-	((br_union_u64 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -620,7 +613,7 @@ static inline void
 br_enc64be(void *dst, uint64_t x)
 {
 #if BR_BE_UNALIGNED
-	((br_union_u64 *)dst)->u = x;
+	memcpy(dst, (const void *)&x, sizeof(x));
 #else
 	unsigned char *buf;
 
@@ -634,7 +627,9 @@ static inline uint64_t
 br_dec64le(const void *src)
 {
 #if BR_LE_UNALIGNED
-	return ((const br_union_u64 *)src)->u;
+	uint64_t x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
@@ -648,7 +643,9 @@ static inline uint64_t
 br_dec64be(const void *src)
 {
 #if BR_BE_UNALIGNED
-	return ((const br_union_u64 *)src)->u;
+	uint64_t x;
+	memcpy(&x, src, sizeof(x));
+	return x;
 #else
 	const unsigned char *buf;
 
