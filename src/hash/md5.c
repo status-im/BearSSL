@@ -191,18 +191,12 @@ br_md5_set_state(br_md5_context *cc, const void *stb, uint64_t count)
 	cc->count = count;
 }
 
-/* see bearssl.h */
-const br_hash_class br_md5_vtable = {
+/* see inner.h */
+br_hash_vtable(
+	md5,
 	sizeof(br_md5_context),
 	BR_HASHDESC_ID(br_md5_ID)
 		| BR_HASHDESC_OUT(16)
 		| BR_HASHDESC_STATE(16)
 		| BR_HASHDESC_LBLEN(6)
-		| BR_HASHDESC_MD_PADDING,
-	(void (*)(const br_hash_class **))&br_md5_init,
-	(void (*)(const br_hash_class **, const void *, size_t))&br_md5_update,
-	(void (*)(const br_hash_class *const *, void *))&br_md5_out,
-	(uint64_t (*)(const br_hash_class *const *, void *))&br_md5_state,
-	(void (*)(const br_hash_class **, const void *, uint64_t))
-		&br_md5_set_state
-};
+		| BR_HASHDESC_MD_PADDING);

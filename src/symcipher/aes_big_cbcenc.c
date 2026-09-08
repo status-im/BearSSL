@@ -55,13 +55,9 @@ br_aes_big_cbcenc_run(const br_aes_big_cbcenc_keys *ctx,
 	}
 }
 
-/* see bearssl_block.h */
-const br_block_cbcenc_class br_aes_big_cbcenc_vtable = {
+/* see inner.h */
+br_block_cbcenc_vtable(
+	aes_big,
 	sizeof(br_aes_big_cbcenc_keys),
 	16,
-	4,
-	(void (*)(const br_block_cbcenc_class **, const void *, size_t))
-		&br_aes_big_cbcenc_init,
-	(void (*)(const br_block_cbcenc_class *const *, void *, void *, size_t))
-		&br_aes_big_cbcenc_run
-};
+	4);

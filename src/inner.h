@@ -2574,4 +2574,378 @@ br_cpuid(uint32_t mask_eax, uint32_t mask_ebx,
 
 /* ==================================================================== */
 
+/* see bearssl_aead.h */
+#define br_aead_vtable(xxx, tag_size) \
+	static void \
+	br_##xxx##_reset_wrapper( \
+		const br_aead_class **cc, const void *iv, size_t len) \
+	{ \
+		br_##xxx##_reset((void *)cc, iv, len); \
+	} \
+    \
+	static void \
+	br_##xxx##_aad_inject_wrapper( \
+		const br_aead_class **cc, const void *data, size_t len) \
+	{ \
+		br_##xxx##_aad_inject((void *)cc, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_flip_wrapper( \
+		const br_aead_class **cc) \
+	{ \
+		br_##xxx##_flip((void *)cc); \
+	} \
+	\
+	static void \
+	br_##xxx##_run_wrapper( \
+		const br_aead_class **cc, int encrypt, void *data, size_t len) \
+	{ \
+		br_##xxx##_run((void *)cc, encrypt, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_get_tag_wrapper( \
+		const br_aead_class **cc, void *tag) \
+	{ \
+		br_##xxx##_get_tag((void *)cc, tag); \
+	} \
+	\
+	static uint32_t \
+	br_##xxx##_check_tag_wrapper( \
+		const br_aead_class **cc, const void *tag) \
+	{ \
+		return br_##xxx##_check_tag((void *)cc, tag); \
+	} \
+	\
+	static void \
+	br_##xxx##_get_tag_trunc_wrapper( \
+		const br_aead_class **cc, void *tag, size_t len) \
+	{ \
+		br_##xxx##_get_tag_trunc((void *)cc, tag, len); \
+	} \
+	\
+	static uint32_t \
+	br_##xxx##_check_tag_trunc_wrapper( \
+		const br_aead_class **cc, const void *tag, size_t len) \
+	{ \
+		return br_##xxx##_check_tag_trunc((void *)cc, tag, len); \
+	} \
+	\
+	const br_aead_class br_##xxx##_vtable = { \
+		tag_size, \
+		&br_##xxx##_reset_wrapper, \
+		&br_##xxx##_aad_inject_wrapper, \
+		&br_##xxx##_flip_wrapper, \
+		&br_##xxx##_run_wrapper, \
+		&br_##xxx##_get_tag_wrapper, \
+		&br_##xxx##_check_tag_wrapper, \
+		&br_##xxx##_get_tag_trunc_wrapper, \
+		&br_##xxx##_check_tag_trunc_wrapper \
+	}
+
+/* see bearssl_block.h */
+#define br_block_cbcenc_vtable(xxx, context_size, block_size, log_block_size) \
+	static void \
+	br_##xxx##_cbcenc_init_wrapper( \
+		const br_block_cbcenc_class **ctx, const void *key, size_t key_len) \
+	{ \
+		br_##xxx##_cbcenc_init((void *)ctx, key, key_len); \
+	} \
+	\
+	static void \
+	br_##xxx##_cbcenc_run_wrapper( \
+		const br_block_cbcenc_class *const *ctx, \
+		void *iv, void *data, size_t len) \
+	{ \
+		br_##xxx##_cbcenc_run((void *)ctx, iv, data, len); \
+	} \
+	\
+	const br_block_cbcenc_class br_##xxx##_cbcenc_vtable = { \
+		context_size, \
+		block_size, \
+		log_block_size, \
+		&br_##xxx##_cbcenc_init_wrapper, \
+		&br_##xxx##_cbcenc_run_wrapper \
+	}
+
+/* see bearssl_block.h */
+#define br_block_cbcdec_vtable(xxx, context_size, block_size, log_block_size) \
+	static void \
+	br_##xxx##_cbcdec_init_wrapper( \
+		const br_block_cbcdec_class **ctx, const void *key, size_t key_len) \
+	{ \
+		br_##xxx##_cbcdec_init((void *)ctx, key, key_len); \
+	} \
+	\
+	static void \
+	br_##xxx##_cbcdec_run_wrapper( \
+		const br_block_cbcdec_class *const *ctx, \
+		void *iv, void *data, size_t len) \
+	{ \
+		br_##xxx##_cbcdec_run((void *)ctx, iv, data, len); \
+	} \
+	\
+	const br_block_cbcdec_class br_##xxx##_cbcdec_vtable = { \
+		context_size, \
+		block_size, \
+		log_block_size, \
+		&br_##xxx##_cbcdec_init_wrapper, \
+		&br_##xxx##_cbcdec_run_wrapper \
+	}
+
+/* see bearssl_block.h */
+#define br_block_ctr_vtable(xxx, context_size, block_size, log_block_size) \
+	static void \
+	br_##xxx##_ctr_init_wrapper( \
+		const br_block_ctr_class **ctx, const void *key, size_t key_len) \
+	{ \
+		br_##xxx##_ctr_init((void *)ctx, key, key_len); \
+	} \
+	\
+	static uint32_t \
+	br_##xxx##_ctr_run_wrapper( \
+		const br_block_ctr_class *const *ctx, \
+		const void *iv, uint32_t cc, void *data, size_t len) \
+	{ \
+		return br_##xxx##_ctr_run((void *)ctx, iv, cc, data, len); \
+	} \
+	\
+	const br_block_ctr_class br_##xxx##_ctr_vtable = { \
+		context_size, \
+		block_size, \
+		log_block_size, \
+		&br_##xxx##_ctr_init_wrapper, \
+		&br_##xxx##_ctr_run_wrapper \
+	}
+
+/* see bearssl_block.h */
+#define br_block_ctrcbc_vtable(xxx, context_size, block_size, log_block_size) \
+	static void \
+	br_##xxx##_ctrcbc_init_wrapper( \
+		const br_block_ctrcbc_class **ctx, const void *key, size_t key_len) \
+	{ \
+		br_##xxx##_ctrcbc_init((void *)ctx, key, key_len); \
+	} \
+	\
+	static void \
+	br_##xxx##_ctrcbc_encrypt_wrapper( \
+		const br_block_ctrcbc_class *const *ctx, \
+		void *ctr, void *cbcmac, void *data, size_t len) \
+	{ \
+		br_##xxx##_ctrcbc_encrypt((void *)ctx, ctr, cbcmac, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_ctrcbc_decrypt_wrapper( \
+		const br_block_ctrcbc_class *const *ctx, \
+		void *ctr, void *cbcmac, void *data, size_t len) \
+	{ \
+		br_##xxx##_ctrcbc_decrypt((void *)ctx, ctr, cbcmac, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_ctrcbc_ctr_wrapper( \
+		const br_block_ctrcbc_class *const *ctx, \
+		void *ctr, void *data, size_t len) \
+	{ \
+		br_##xxx##_ctrcbc_ctr((void *)ctx, ctr, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_ctrcbc_mac_wrapper( \
+		const br_block_ctrcbc_class *const *ctx, \
+		void *cbcmac, const void *data, size_t len) \
+	{ \
+		br_##xxx##_ctrcbc_mac((void *)ctx, cbcmac, data, len); \
+	} \
+	\
+	const br_block_ctrcbc_class br_##xxx##_ctrcbc_vtable = { \
+		context_size, \
+		block_size, \
+		log_block_size, \
+		&br_##xxx##_ctrcbc_init_wrapper, \
+		&br_##xxx##_ctrcbc_encrypt_wrapper, \
+		&br_##xxx##_ctrcbc_decrypt_wrapper, \
+		&br_##xxx##_ctrcbc_ctr_wrapper, \
+		&br_##xxx##_ctrcbc_mac_wrapper \
+	}
+
+/* see bearssl_hash.h */
+#define br_hash_vtable(xxx, context_size, desc) \
+	static void \
+	br_##xxx##_init_wrapper( \
+		const br_hash_class **ctx) \
+	{ \
+		br_##xxx##_init((void *)ctx); \
+	} \
+	\
+	static void \
+	br_##xxx##_update_wrapper( \
+		const br_hash_class **ctx, const void *data, size_t len) \
+	{ \
+		br_##xxx##_update((void *)ctx, data, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_out_wrapper( \
+		const br_hash_class *const *ctx, void *dst) \
+	{ \
+		br_##xxx##_out((void *)ctx, dst); \
+	} \
+	\
+	static uint64_t \
+	br_##xxx##_state_wrapper( \
+		const br_hash_class *const *ctx, void *dst) \
+	{ \
+		return br_##xxx##_state((void *)ctx, dst); \
+	} \
+	\
+	static void \
+	br_##xxx##_set_state_wrapper( \
+		const br_hash_class **ctx, const void *stb, uint64_t count) \
+	{ \
+		br_##xxx##_set_state((void *)ctx, stb, count); \
+	} \
+	\
+	const br_hash_class br_##xxx##_vtable = { \
+		context_size, \
+		desc, \
+		&br_##xxx##_init_wrapper, \
+		&br_##xxx##_update_wrapper, \
+		&br_##xxx##_out_wrapper, \
+		&br_##xxx##_state_wrapper, \
+		&br_##xxx##_set_state_wrapper \
+	}
+
+/* see bearssl_rand.h */
+#define br_prng_vtable(xxx, context_size) \
+	static void \
+	br_##xxx##_init_wrapper( \
+		const br_prng_class **ctx, const void *params, \
+		const void *seed, size_t seed_len) \
+	{ \
+		br_##xxx##_init((void *)ctx, params, seed, seed_len); \
+	} \
+	\
+	static void \
+	br_##xxx##_generate_wrapper( \
+		const br_prng_class **ctx, void *out, size_t len) \
+	{ \
+		br_##xxx##_generate((void *)ctx, out, len); \
+	} \
+	\
+	static void \
+	br_##xxx##_update_wrapper( \
+		const br_prng_class **ctx, const void *seed, size_t seed_len) \
+	{ \
+		br_##xxx##_update((void *)ctx, seed, seed_len); \
+	} \
+	\
+	const br_prng_class br_##xxx##_vtable = { \
+		context_size, \
+		&br_##xxx##_init_wrapper, \
+		&br_##xxx##_generate_wrapper, \
+		&br_##xxx##_update_wrapper \
+	}
+
+/* see bearssl_ssl.h */
+#define br_sslrec_in_vtable(xxx, context_size) \
+	static int \
+	xxx##_check_length_wrapper( \
+		const br_sslrec_in_class *const *ctx, size_t record_len) \
+	{ \
+		return xxx##_check_length((void *)ctx, record_len); \
+	} \
+	\
+	static unsigned char * \
+	xxx##_decrypt_wrapper( \
+		const br_sslrec_in_class **ctx, \
+		int record_type, unsigned version, void *payload, size_t *len) \
+	{ \
+		return xxx##_decrypt((void *)ctx, record_type, version, payload, len); \
+	} \
+	\
+	const br_sslrec_in_class br_sslrec_in_##xxx##_vtable = { \
+		context_size, \
+		&xxx##_check_length_wrapper, \
+		&xxx##_decrypt_wrapper \
+	}
+
+#define br_sslrec_in_init_vtable(xxx, context_size) \
+	static int \
+	xxx##_check_length_wrapper( \
+		const br_sslrec_in_class *const *ctx, size_t record_len) \
+	{ \
+		return xxx##_check_length((void *)ctx, record_len); \
+	} \
+	\
+	static unsigned char * \
+	xxx##_decrypt_wrapper( \
+		const br_sslrec_in_class **ctx, \
+		int record_type, unsigned version, void *payload, size_t *len) \
+	{ \
+		return xxx##_decrypt((void *)ctx, record_type, version, payload, len); \
+	} \
+	\
+	const br_sslrec_in_##xxx##_class br_sslrec_in_##xxx##_vtable = { \
+		{ \
+			context_size, \
+			&xxx##_check_length_wrapper, \
+			&xxx##_decrypt_wrapper \
+		}, \
+		&in_##xxx##_init \
+	}
+
+/* see bearssl_ssl.h */
+#define br_sslrec_out_vtable(xxx, context_size) \
+	static void \
+	xxx##_max_plaintext_wrapper( \
+		const br_sslrec_out_class *const *ctx, size_t *start, size_t *end) \
+	{ \
+		xxx##_max_plaintext((void *)ctx, start, end); \
+	} \
+	\
+	static unsigned char * \
+	xxx##_encrypt_wrapper( \
+		const br_sslrec_out_class **ctx, \
+		int record_type, unsigned version, void *plaintext, size_t *len) \
+	{ \
+		return xxx##_encrypt( \
+			(void *)ctx, record_type, version, plaintext, len); \
+	} \
+	\
+	const br_sslrec_out_class br_sslrec_out_##xxx##_vtable = { \
+		context_size, \
+		&xxx##_max_plaintext_wrapper, \
+		&xxx##_encrypt_wrapper \
+	}
+
+/* see bearssl_ssl.h */
+#define br_sslrec_out_init_vtable(xxx, context_size) \
+	static void \
+	xxx##_max_plaintext_wrapper( \
+		const br_sslrec_out_class *const *ctx, size_t *start, size_t *end) \
+	{ \
+		xxx##_max_plaintext((void *)ctx, start, end); \
+	} \
+	\
+	static unsigned char * \
+	xxx##_encrypt_wrapper( \
+		const br_sslrec_out_class **ctx, \
+		int record_type, unsigned version, void *plaintext, size_t *len) \
+	{ \
+		return xxx##_encrypt( \
+			(void *)ctx, record_type, version, plaintext, len); \
+	} \
+	\
+	const br_sslrec_out_##xxx##_class br_sslrec_out_##xxx##_vtable = { \
+		{ \
+			context_size, \
+			&xxx##_max_plaintext_wrapper, \
+			&xxx##_encrypt_wrapper \
+		}, \
+		&out_##xxx##_init \
+	}
+
 #endif

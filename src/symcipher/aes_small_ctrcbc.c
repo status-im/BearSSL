@@ -120,23 +120,9 @@ br_aes_small_ctrcbc_decrypt(const br_aes_small_ctrcbc_keys *ctx,
 	br_aes_small_ctrcbc_ctr(ctx, ctr, data, len);
 }
 
-/* see bearssl_block.h */
-const br_block_ctrcbc_class br_aes_small_ctrcbc_vtable = {
+/* see inner.h */
+br_block_ctrcbc_vtable(
+	aes_small,
 	sizeof(br_aes_small_ctrcbc_keys),
 	16,
-	4,
-	(void (*)(const br_block_ctrcbc_class **, const void *, size_t))
-		&br_aes_small_ctrcbc_init,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_small_ctrcbc_encrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_small_ctrcbc_decrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, size_t))
-		&br_aes_small_ctrcbc_ctr,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, const void *, size_t))
-		&br_aes_small_ctrcbc_mac
-};
+	4);

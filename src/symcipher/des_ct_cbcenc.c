@@ -57,13 +57,9 @@ br_des_ct_cbcenc_run(const br_des_ct_cbcenc_keys *ctx,
 	}
 }
 
-/* see bearssl_block.h */
-const br_block_cbcenc_class br_des_ct_cbcenc_vtable = {
+/* see inner.h */
+br_block_cbcenc_vtable(
+	des_ct,
 	sizeof(br_des_ct_cbcenc_keys),
 	8,
-	3,
-	(void (*)(const br_block_cbcenc_class **, const void *, size_t))
-		&br_des_ct_cbcenc_init,
-	(void (*)(const br_block_cbcenc_class *const *, void *, void *, size_t))
-		&br_des_ct_cbcenc_run
-};
+	3);

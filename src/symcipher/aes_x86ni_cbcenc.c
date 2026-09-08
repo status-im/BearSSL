@@ -99,16 +99,12 @@ br_aes_x86ni_cbcenc_run(const br_aes_x86ni_cbcenc_keys *ctx,
 
 BR_TARGETS_X86_DOWN
 
-/* see bearssl_block.h */
-const br_block_cbcenc_class br_aes_x86ni_cbcenc_vtable = {
+/* see inner.h */
+br_block_cbcenc_vtable(
+	aes_x86ni,
 	sizeof(br_aes_x86ni_cbcenc_keys),
 	16,
-	4,
-	(void (*)(const br_block_cbcenc_class **, const void *, size_t))
-		&br_aes_x86ni_cbcenc_init,
-	(void (*)(const br_block_cbcenc_class *const *, void *, void *, size_t))
-		&br_aes_x86ni_cbcenc_run
-};
+	4);
 
 #else
 

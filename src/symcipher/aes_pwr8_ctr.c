@@ -686,17 +686,12 @@ br_aes_pwr8_ctr_run(const br_aes_pwr8_ctr_keys *ctx,
 	return cc;
 }
 
-/* see bearssl_block.h */
-const br_block_ctr_class br_aes_pwr8_ctr_vtable = {
+/* see inner.h */
+br_block_ctr_vtable(
+	aes_pwr8,
 	sizeof(br_aes_pwr8_ctr_keys),
 	16,
-	4,
-	(void (*)(const br_block_ctr_class **, const void *, size_t))
-		&br_aes_pwr8_ctr_init,
-	(uint32_t (*)(const br_block_ctr_class *const *,
-		const void *, uint32_t, void *, size_t))
-		&br_aes_pwr8_ctr_run
-};
+	4);
 
 /* see bearssl_block.h */
 const br_block_ctr_class *

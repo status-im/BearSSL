@@ -42,11 +42,12 @@ gen_ccm_init(br_sslrec_ccm_context *cc,
 }
 
 static void
-in_ccm_init(br_sslrec_ccm_context *cc,
+in_ccm_init(const br_sslrec_in_ccm_class **ctx,
 	const br_block_ctrcbc_class *bc_impl,
 	const void *key, size_t key_len,
 	const void *iv, size_t tag_len)
 {
+	br_sslrec_ccm_context *cc = (void *)ctx;
 	cc->vtable.in = &br_sslrec_in_ccm_vtable;
 	gen_ccm_init(cc, bc_impl, key, key_len, iv, tag_len);
 }
@@ -105,28 +106,16 @@ ccm_decrypt(br_sslrec_ccm_context *cc,
 	return buf;
 }
 
-/* see bearssl_ssl.h */
-const br_sslrec_in_ccm_class br_sslrec_in_ccm_vtable = {
-	{
-		sizeof(br_sslrec_ccm_context),
-		(int (*)(const br_sslrec_in_class *const *, size_t))
-			&ccm_check_length,
-		(unsigned char *(*)(const br_sslrec_in_class **,
-			int, unsigned, void *, size_t *))
-			&ccm_decrypt
-	},
-	(void (*)(const br_sslrec_in_ccm_class **,
-		const br_block_ctrcbc_class *, const void *, size_t,
-		const void *, size_t))
-		&in_ccm_init
-};
+/* see inner.h */
+br_sslrec_in_init_vtable(ccm, sizeof(br_sslrec_ccm_context));
 
 static void
-out_ccm_init(br_sslrec_ccm_context *cc,
+out_ccm_init(const br_sslrec_out_ccm_class **ctx,
 	const br_block_ctrcbc_class *bc_impl,
 	const void *key, size_t key_len,
 	const void *iv, size_t tag_len)
 {
+	br_sslrec_ccm_context *cc = (void *)ctx;
 	cc->vtable.out = &br_sslrec_out_ccm_vtable;
 	gen_ccm_init(cc, bc_impl, key, key_len, iv, tag_len);
 }
@@ -195,19 +184,5 @@ ccm_encrypt(br_sslrec_ccm_context *cc,
 	return buf;
 }
 
-/* see bearssl_ssl.h */
-const br_sslrec_out_ccm_class br_sslrec_out_ccm_vtable = {
-	{
-		sizeof(br_sslrec_ccm_context),
-		(void (*)(const br_sslrec_out_class *const *,
-			size_t *, size_t *))
-			&ccm_max_plaintext,
-		(unsigned char *(*)(const br_sslrec_out_class **,
-			int, unsigned, void *, size_t *))
-			&ccm_encrypt
-	},
-	(void (*)(const br_sslrec_out_ccm_class **,
-		const br_block_ctrcbc_class *, const void *, size_t,
-		const void *, size_t))
-		&out_ccm_init
-};
+/* see inner.h */
+br_sslrec_out_init_vtable(ccm, sizeof(br_sslrec_ccm_context));

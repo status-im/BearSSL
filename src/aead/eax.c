@@ -503,23 +503,5 @@ br_eax_check_tag(br_eax_context *ctx, const void *tag)
 	return br_eax_check_tag_trunc(ctx, tag, 16);
 }
 
-/* see bearssl_aead.h */
-const br_aead_class br_eax_vtable = {
-	16,
-	(void (*)(const br_aead_class **, const void *, size_t))
-		&br_eax_reset,
-	(void (*)(const br_aead_class **, const void *, size_t))
-		&br_eax_aad_inject,
-	(void (*)(const br_aead_class **))
-		&br_eax_flip,
-	(void (*)(const br_aead_class **, int, void *, size_t))
-		&br_eax_run,
-	(void (*)(const br_aead_class **, void *))
-		&br_eax_get_tag,
-	(uint32_t (*)(const br_aead_class **, const void *))
-		&br_eax_check_tag,
-	(void (*)(const br_aead_class **, void *, size_t))
-		&br_eax_get_tag_trunc,
-	(uint32_t (*)(const br_aead_class **, const void *, size_t))
-		&br_eax_check_tag_trunc
-};
+/* see inner.h */
+br_aead_vtable(eax, 16);

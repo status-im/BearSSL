@@ -304,38 +304,24 @@ br_sha256_out(const br_sha256_context *cc, void *dst)
 	sha2small_out(cc, dst, 8);
 }
 
-/* see bearssl.h */
-const br_hash_class br_sha224_vtable = {
+/* see inner.h */
+br_hash_vtable(
+	sha224,
 	sizeof(br_sha224_context),
 	BR_HASHDESC_ID(br_sha224_ID)
 		| BR_HASHDESC_OUT(28)
 		| BR_HASHDESC_STATE(32)
 		| BR_HASHDESC_LBLEN(6)
 		| BR_HASHDESC_MD_PADDING
-		| BR_HASHDESC_MD_PADDING_BE,
-	(void (*)(const br_hash_class **))&br_sha224_init,
-	(void (*)(const br_hash_class **,
-		const void *, size_t))&br_sha224_update,
-	(void (*)(const br_hash_class *const *, void *))&br_sha224_out,
-	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha224_state,
-	(void (*)(const br_hash_class **, const void *, uint64_t))
-		&br_sha224_set_state
-};
+		| BR_HASHDESC_MD_PADDING_BE);
 
-/* see bearssl.h */
-const br_hash_class br_sha256_vtable = {
+/* see inner.h */
+br_hash_vtable(
+	sha256,
 	sizeof(br_sha256_context),
 	BR_HASHDESC_ID(br_sha256_ID)
 		| BR_HASHDESC_OUT(32)
 		| BR_HASHDESC_STATE(32)
 		| BR_HASHDESC_LBLEN(6)
 		| BR_HASHDESC_MD_PADDING
-		| BR_HASHDESC_MD_PADDING_BE,
-	(void (*)(const br_hash_class **))&br_sha256_init,
-	(void (*)(const br_hash_class **,
-		const void *, size_t))&br_sha256_update,
-	(void (*)(const br_hash_class *const *, void *))&br_sha256_out,
-	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha256_state,
-	(void (*)(const br_hash_class **, const void *, uint64_t))
-		&br_sha256_set_state
-};
+		| BR_HASHDESC_MD_PADDING_BE);

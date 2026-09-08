@@ -194,13 +194,5 @@ br_aesctr_drbg_update(br_aesctr_drbg_context *ctx, const void *seed, size_t len)
 	ctx->cc = 0;
 }
 
-/* see bearssl_rand.h */
-const br_prng_class br_aesctr_drbg_vtable = {
-	sizeof(br_aesctr_drbg_context),
-	(void (*)(const br_prng_class **, const void *, const void *, size_t))
-		&br_aesctr_drbg_init,
-	(void (*)(const br_prng_class **, void *, size_t))
-		&br_aesctr_drbg_generate,
-	(void (*)(const br_prng_class **, const void *, size_t))
-		&br_aesctr_drbg_update
-};
+/* see inner.h */
+br_prng_vtable(drbg, sizeof(br_aesctr_drbg_context));

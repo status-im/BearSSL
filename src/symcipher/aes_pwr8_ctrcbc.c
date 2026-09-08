@@ -913,26 +913,12 @@ br_aes_pwr8_ctrcbc_mac(const br_aes_pwr8_ctrcbc_keys *ctx,
 	}
 }
 
-/* see bearssl_block.h */
-const br_block_ctrcbc_class br_aes_pwr8_ctrcbc_vtable = {
+/* see inner.h */
+br_block_ctrcbc_vtable(
+	aes_pwr8,
 	sizeof(br_aes_pwr8_ctrcbc_keys),
 	16,
-	4,
-	(void (*)(const br_block_ctrcbc_class **, const void *, size_t))
-		&br_aes_pwr8_ctrcbc_init,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_pwr8_ctrcbc_encrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_pwr8_ctrcbc_decrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, size_t))
-		&br_aes_pwr8_ctrcbc_ctr,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, const void *, size_t))
-		&br_aes_pwr8_ctrcbc_mac
-};
+	4);
 
 #else
 

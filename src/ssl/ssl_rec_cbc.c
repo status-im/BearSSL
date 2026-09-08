@@ -25,13 +25,14 @@
 #include "inner.h"
 
 static void
-in_cbc_init(br_sslrec_in_cbc_context *cc,
+in_cbc_init(const br_sslrec_in_cbc_class **ctx,
 	const br_block_cbcdec_class *bc_impl,
 	const void *bc_key, size_t bc_key_len,
 	const br_hash_class *dig_impl,
 	const void *mac_key, size_t mac_key_len, size_t mac_out_len,
 	const void *iv)
 {
+	br_sslrec_in_cbc_context *cc = (void *)ctx;
 	cc->vtable = &br_sslrec_in_cbc_vtable;
 	cc->seq = 0;
 	bc_impl->init(&cc->bc.vtable, bc_key, bc_key_len);
@@ -229,22 +230,8 @@ cbc_decrypt(br_sslrec_in_cbc_context *cc,
 	return buf;
 }
 
-/* see bearssl_ssl.h */
-const br_sslrec_in_cbc_class br_sslrec_in_cbc_vtable = {
-	{
-		sizeof(br_sslrec_in_cbc_context),
-		(int (*)(const br_sslrec_in_class *const *, size_t))
-			&cbc_check_length,
-		(unsigned char *(*)(const br_sslrec_in_class **,
-			int, unsigned, void *, size_t *))
-			&cbc_decrypt
-	},
-	(void (*)(const br_sslrec_in_cbc_class **,
-		const br_block_cbcdec_class *, const void *, size_t,
-		const br_hash_class *, const void *, size_t, size_t,
-		const void *))
-		&in_cbc_init
-};
+/* see inner.h */
+br_sslrec_in_init_vtable(cbc, sizeof(br_sslrec_in_cbc_context));
 
 /*
  * For CBC output:
@@ -265,13 +252,14 @@ const br_sslrec_in_cbc_class br_sslrec_in_cbc_vtable = {
  */
 
 static void
-out_cbc_init(br_sslrec_out_cbc_context *cc,
+out_cbc_init(const br_sslrec_out_cbc_class **ctx,
 	const br_block_cbcenc_class *bc_impl,
 	const void *bc_key, size_t bc_key_len,
 	const br_hash_class *dig_impl,
 	const void *mac_key, size_t mac_key_len, size_t mac_out_len,
 	const void *iv)
 {
+	br_sslrec_out_cbc_context *cc = (void *)ctx;
 	cc->vtable = &br_sslrec_out_cbc_vtable;
 	cc->seq = 0;
 	bc_impl->init(&cc->bc.vtable, bc_key, bc_key_len);
@@ -422,19 +410,4 @@ cbc_encrypt(br_sslrec_out_cbc_context *cc,
 }
 
 /* see bearssl_ssl.h */
-const br_sslrec_out_cbc_class br_sslrec_out_cbc_vtable = {
-	{
-		sizeof(br_sslrec_out_cbc_context),
-		(void (*)(const br_sslrec_out_class *const *,
-			size_t *, size_t *))
-			&cbc_max_plaintext,
-		(unsigned char *(*)(const br_sslrec_out_class **,
-			int, unsigned, void *, size_t *))
-			&cbc_encrypt
-	},
-	(void (*)(const br_sslrec_out_cbc_class **,
-		const br_block_cbcenc_class *, const void *, size_t,
-		const br_hash_class *, const void *, size_t, size_t,
-		const void *))
-		&out_cbc_init
-};
+br_sslrec_out_init_vtable(cbc, sizeof(br_sslrec_out_cbc_context));

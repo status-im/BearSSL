@@ -61,10 +61,11 @@ gen_chapol_process(br_sslrec_chapol_context *cc,
 }
 
 static void
-in_chapol_init(br_sslrec_chapol_context *cc,
+in_chapol_init(const br_sslrec_in_chapol_class **ctx,
 	br_chacha20_run ichacha, br_poly1305_run ipoly,
 	const void *key, const void *iv)
 {
+	br_sslrec_chapol_context *cc = (void *)ctx;
 	cc->vtable.in = &br_sslrec_in_chapol_vtable;
 	gen_chapol_init(cc, ichacha, ipoly, key, iv);
 }
@@ -102,27 +103,15 @@ chapol_decrypt(br_sslrec_chapol_context *cc,
 	return buf;
 }
 
-/* see bearssl_ssl.h */
-const br_sslrec_in_chapol_class br_sslrec_in_chapol_vtable = {
-	{
-		sizeof(br_sslrec_chapol_context),
-		(int (*)(const br_sslrec_in_class *const *, size_t))
-			&chapol_check_length,
-		(unsigned char *(*)(const br_sslrec_in_class **,
-			int, unsigned, void *, size_t *))
-			&chapol_decrypt
-	},
-	(void (*)(const br_sslrec_in_chapol_class **,
-		br_chacha20_run, br_poly1305_run,
-		const void *, const void *))
-		&in_chapol_init
-};
+/* see inner.h */
+br_sslrec_in_init_vtable(chapol, sizeof(br_sslrec_chapol_context));
 
 static void
-out_chapol_init(br_sslrec_chapol_context *cc,
+out_chapol_init(const br_sslrec_out_chapol_class **ctx,
 	br_chacha20_run ichacha, br_poly1305_run ipoly,
 	const void *key, const void *iv)
 {
+	br_sslrec_chapol_context *cc = (void *)ctx;
 	cc->vtable.out = &br_sslrec_out_chapol_vtable;
 	gen_chapol_init(cc, ichacha, ipoly, key, iv);
 }
@@ -159,19 +148,5 @@ chapol_encrypt(br_sslrec_chapol_context *cc,
 	return buf;
 }
 
-/* see bearssl_ssl.h */
-const br_sslrec_out_chapol_class br_sslrec_out_chapol_vtable = {
-	{
-		sizeof(br_sslrec_chapol_context),
-		(void (*)(const br_sslrec_out_class *const *,
-			size_t *, size_t *))
-			&chapol_max_plaintext,
-		(unsigned char *(*)(const br_sslrec_out_class **,
-			int, unsigned, void *, size_t *))
-			&chapol_encrypt
-	},
-	(void (*)(const br_sslrec_out_chapol_class **,
-		br_chacha20_run, br_poly1305_run,
-		const void *, const void *))
-		&out_chapol_init
-};
+/* see inner.h */
+br_sslrec_out_init_vtable(chapol, sizeof(br_sslrec_chapol_context));

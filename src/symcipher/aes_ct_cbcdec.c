@@ -99,13 +99,9 @@ br_aes_ct_cbcdec_run(const br_aes_ct_cbcdec_keys *ctx,
 	br_enc32le(ivbuf + 12, iv3);
 }
 
-/* see bearssl_block.h */
-const br_block_cbcdec_class br_aes_ct_cbcdec_vtable = {
+/* see inner.h */
+br_block_cbcdec_vtable(
+	aes_ct,
 	sizeof(br_aes_ct_cbcdec_keys),
 	16,
-	4,
-	(void (*)(const br_block_cbcdec_class **, const void *, size_t))
-		&br_aes_ct_cbcdec_init,
-	(void (*)(const br_block_cbcdec_class *const *, void *, void *, size_t))
-		&br_aes_ct_cbcdec_run
-};
+	4);

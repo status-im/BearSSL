@@ -411,23 +411,9 @@ br_aes_ct64_ctrcbc_decrypt(const br_aes_ct64_ctrcbc_keys *ctx,
 	br_enc32le((unsigned char *)cbcmac + 12, cm3);
 }
 
-/* see bearssl_block.h */
-const br_block_ctrcbc_class br_aes_ct64_ctrcbc_vtable = {
+/* see inner.h */
+br_block_ctrcbc_vtable(
+	aes_ct64,
 	sizeof(br_aes_ct64_ctrcbc_keys),
 	16,
-	4,
-	(void (*)(const br_block_ctrcbc_class **, const void *, size_t))
-		&br_aes_ct64_ctrcbc_init,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_ct64_ctrcbc_encrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, void *, size_t))
-		&br_aes_ct64_ctrcbc_decrypt,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, void *, size_t))
-		&br_aes_ct64_ctrcbc_ctr,
-	(void (*)(const br_block_ctrcbc_class *const *,
-		void *, const void *, size_t))
-		&br_aes_ct64_ctrcbc_mac
-};
+	4);

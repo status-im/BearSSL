@@ -173,19 +173,13 @@ br_sha1_set_state(br_sha1_context *cc, const void *stb, uint64_t count)
 	cc->count = count;
 }
 
-/* see bearssl.h */
-const br_hash_class br_sha1_vtable = {
+/* see inner.h */
+br_hash_vtable(
+	sha1,
 	sizeof(br_sha1_context),
 	BR_HASHDESC_ID(br_sha1_ID)
 		| BR_HASHDESC_OUT(20)
 		| BR_HASHDESC_STATE(20)
 		| BR_HASHDESC_LBLEN(6)
 		| BR_HASHDESC_MD_PADDING
-		| BR_HASHDESC_MD_PADDING_BE,
-	(void (*)(const br_hash_class **))&br_sha1_init,
-	(void (*)(const br_hash_class **, const void *, size_t))&br_sha1_update,
-	(void (*)(const br_hash_class *const *, void *))&br_sha1_out,
-	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha1_state,
-	(void (*)(const br_hash_class **, const void *, uint64_t))
-		&br_sha1_set_state
-};
+		| BR_HASHDESC_MD_PADDING_BE);

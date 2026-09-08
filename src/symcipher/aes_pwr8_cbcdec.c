@@ -640,16 +640,12 @@ br_aes_pwr8_cbcdec_run(const br_aes_pwr8_cbcdec_keys *ctx,
 	memcpy(iv, nextiv, 16);
 }
 
-/* see bearssl_block.h */
-const br_block_cbcdec_class br_aes_pwr8_cbcdec_vtable = {
+/* see inner.h */
+br_block_cbcdec_vtable(
+	aes_pwr8,
 	sizeof(br_aes_pwr8_cbcdec_keys),
 	16,
-	4,
-	(void (*)(const br_block_cbcdec_class **, const void *, size_t))
-		&br_aes_pwr8_cbcdec_init,
-	(void (*)(const br_block_cbcdec_class *const *, void *, void *, size_t))
-		&br_aes_pwr8_cbcdec_run
-};
+	4);
 
 /* see bearssl_block.h */
 const br_block_cbcdec_class *
